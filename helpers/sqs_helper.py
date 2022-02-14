@@ -11,21 +11,21 @@ from botocore.exceptions import ClientError
 # add project root to sys path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from helpers.base_helper import BaseHelper
-from conf import sqs_conf
+#from conf import sqs_conf
 
 class SqsHelper(BaseHelper):
     """
     SQS Helper object
     """
 
-    def get_sqs_client(self):
+    def get_sqs_client(self, queue_client):
         """
         Return sqs_client object
         :param self:
         :return sqs_client: SQS client object
         """
         try:
-            sqs_client = boto3.client('sqs', config=sqs_conf.config)
+            sqs_client = boto3.client('sqs', config=queue_client)
             self.write(f'Created SQS client')
         except ClientError as err:
             self.write(f'Exception - {err}, Unable to create SQS client', level='error')
@@ -51,7 +51,7 @@ class SqsHelper(BaseHelper):
 
         return queue
 
-    def get_message_from_queue(self, queue_name, attempts=3):
+    def get_message_from_queue(self, queue_name, queue_client, attempts=3):
         """
         Get message from queue
         :param self:
@@ -60,7 +60,7 @@ class SqsHelper(BaseHelper):
         :return messages: messages list object
         """
         try:
-            sqs_client = self.get_sqs_client()
+            sqs_client = self.get_sqs_client(queue_client)
             queue = self.get_sqs_queue(queue_name)
             messages = []
 
