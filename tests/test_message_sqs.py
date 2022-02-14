@@ -26,7 +26,7 @@ def test_message_received_sqs(sqs_instance, skype_instance, concurrent_obj):
             if message in msg:
                 if_message_found = True
                 break
-        assert if_message_found
+        assert if_message_found,'Message mismatch between Skype and SQS!'
 
     except Exception as err:
         raise(err)
